@@ -39,14 +39,6 @@ class EditViewController: UIViewController {
         return collectionView
     }()
     
-    private let effectSlider: UISlider = {
-        let slider = UISlider()
-        slider.minimumValue = 0.0
-        slider.maximumValue = 1.0
-        slider.value = 0.5
-        return slider
-    }()
-    
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("저장", for: .normal)
@@ -122,19 +114,16 @@ class EditViewController: UIViewController {
         
         view.addSubview(imageView)
         view.addSubview(filtersCollectionView)
-        view.addSubview(effectSlider)
         view.addSubview(saveButton)
         
         filtersCollectionView.delegate = self
         filtersCollectionView.dataSource = self
         
-        effectSlider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         
         // 레이아웃 설정
         imageView.translatesAutoresizingMaskIntoConstraints = false
         filtersCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        effectSlider.translatesAutoresizingMaskIntoConstraints = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -148,11 +137,7 @@ class EditViewController: UIViewController {
             filtersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             filtersCollectionView.heightAnchor.constraint(equalToConstant: 80),
             
-            effectSlider.topAnchor.constraint(equalTo: filtersCollectionView.bottomAnchor, constant: 10),
-            effectSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            effectSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            
-            saveButton.topAnchor.constraint(equalTo: effectSlider.bottomAnchor, constant: 10),
+            saveButton.topAnchor.constraint(equalTo: filtersCollectionView.bottomAnchor, constant: 20),
             saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             saveButton.heightAnchor.constraint(equalToConstant: 50)
@@ -203,10 +188,10 @@ class EditViewController: UIViewController {
                 
                 if i % 2 == 0 {
                     // Metal 필터
-                    filteredPreview = self.metalRenderer?.applyFilter(to: previewImage, filterType: i, intensity: 0.5)
+                    filteredPreview = self.metalRenderer?.applyFilter(to: previewImage, filterType: i)
                 } else {
                     // OpenGL 필터
-                    filteredPreview = self.openGLRenderer?.applyFilter(previewImage, filterType: i, intensity: 0.5)
+                    filteredPreview = self.openGLRenderer?.applyFilter(previewImage, filterType: i)
                 }
                 
                 // 메인 스레드에서 UI 업데이트
@@ -238,10 +223,6 @@ class EditViewController: UIViewController {
         UIGraphicsEndImageContext()
         
         return newImage ?? image
-    }
-    
-    @objc private func sliderValueChanged(_ slider: UISlider) {
-        applyFilter(intensity: slider.value)
     }
     
     private func checkPhotoLibraryPermissionAndSave() {
@@ -319,14 +300,14 @@ class EditViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    private func applyFilter(intensity: Float) {
+    private func applyFilter() {
         let originalImage = editableImage.originalImage
         
         // 현재 선택된 필터 인덱스
         let indexPath = filtersCollectionView.indexPathsForSelectedItems?.first ?? IndexPath(item: 0, section: 0)
         let filterName = filterNames[indexPath.item]
         
-        print("필터 적용 시도: \(filterName), 강도: \(intensity)")
+        print("필터 적용 시도: \(filterName)")
         
         if indexPath.item == 0 {
             // Original - 원본으로 복원
@@ -342,14 +323,14 @@ class EditViewController: UIViewController {
         if indexPath.item % 2 == 0 {
             // Metal 필터 적용
             print("Metal 필터 적용 중...")
-            filteredResult = metalRenderer?.applyFilter(to: originalImage, filterType: indexPath.item, intensity: intensity)
+            filteredResult = metalRenderer?.applyFilter(to: originalImage, filterType: indexPath.item)
             if filteredResult == nil {
                 print("Metal 필터 적용 실패")
             }
         } else {
             // OpenGL 필터 적용
             print("OpenGL 필터 적용 중...")
-            filteredResult = openGLRenderer?.applyFilter(originalImage, filterType: indexPath.item, intensity: intensity)
+            filteredResult = openGLRenderer?.applyFilter(originalImage, filterType: indexPath.item)
             if filteredResult == nil {
                 print("OpenGL 필터 적용 실패")
             }
@@ -359,7 +340,7 @@ class EditViewController: UIViewController {
         if let filteredResult = filteredResult {
             // 성공적으로 필터 적용
             filteredImage = filteredResult
-            imageModel.updateCurrentImage(with: filteredResult, filterName: filterName, intensity: intensity)
+            imageModel.updateCurrentImage(with: filteredResult, filterName: filterName)
             imageView.image = filteredResult
             print("필터 적용 성공: \(filterName)")
         } else {
@@ -402,7 +383,7 @@ extension EditViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("필터 선택: \(indexPath.item) - \(filterNames[indexPath.item])")
-        applyFilter(intensity: effectSlider.value)
+        applyFilter()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

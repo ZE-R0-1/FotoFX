@@ -13,6 +13,6 @@
 
 @interface OpenGLRenderer : NSObject
 
-- (UIImage *)applyFilter:(UIImage *)image filterType:(NSInteger)filterType intensity:(float)intensity;
+- (UIImage *)applyFilter:(UIImage *)image filterType:(NSInteger)filterType;
 
 @end

@@ -5,6 +5,7 @@
 //  Created by USER on 3/23/25.
 //
 
+
 #import "OpenGLRenderer.h"
 #import <GLKit/GLKit.h>
 
@@ -80,7 +81,6 @@ static void releaseDataCallback(void *info, const void *data, size_t size) {
     NSString *fragmentShaderSource = @"precision mediump float;\
     varying vec2 v_texCoord;\
     uniform sampler2D u_texture;\
-    uniform float u_intensity;\
     uniform int u_filterType;\
     \
     void main() {\
@@ -91,16 +91,16 @@ static void releaseDataCallback(void *info, const void *data, size_t size) {
             float r = color.r * 0.393 + color.g * 0.769 + color.b * 0.189;\
             float g = color.r * 0.349 + color.g * 0.686 + color.b * 0.168;\
             float b = color.r * 0.272 + color.g * 0.534 + color.b * 0.131;\
-            result = vec4(mix(color.rgb, vec3(r, g, b), u_intensity), color.a);\
+            result = vec4(vec3(r, g, b), color.a);\
         } else if (u_filterType == 3) { /* Chrome */\
             vec3 chrome = vec3(color.r * 0.8 + 0.2, color.g * 0.8 + 0.2, color.b * 0.8 + 0.2);\
-            result = vec4(mix(color.rgb, chrome, u_intensity), color.a);\
+            result = vec4(chrome, color.a);\
         } else if (u_filterType == 5) { /* Mono */\
             float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));\
-            result = vec4(mix(color.rgb, vec3(gray), u_intensity), color.a);\
+            result = vec4(vec3(gray), color.a);\
         } else if (u_filterType == 7) { /* Transfer */\
             vec3 transfer = vec3(1.0 - color.r, 1.0 - color.g, color.b);\
-            result = vec4(mix(color.rgb, transfer, u_intensity), color.a);\
+            result = vec4(transfer, color.a);\
         } else { /* Fallback */\
             result = color;\
         }\
@@ -177,7 +177,7 @@ static void releaseDataCallback(void *info, const void *data, size_t size) {
     return shader;
 }
 
-- (UIImage *)applyFilter:(UIImage *)image filterType:(NSInteger)filterType intensity:(float)intensity {
+- (UIImage *)applyFilter:(UIImage *)image filterType:(NSInteger)filterType {
     [EAGLContext setCurrentContext:_context];
     
     if (_program == 0) {
@@ -253,11 +253,9 @@ static void releaseDataCallback(void *info, const void *data, size_t size) {
     
     // 유니폼 설정
     GLint textureUniform = glGetUniformLocation(_program, "u_texture");
-    GLint intensityUniform = glGetUniformLocation(_program, "u_intensity");
     GLint filterTypeUniform = glGetUniformLocation(_program, "u_filterType");
     
     glUniform1i(textureUniform, 0);
-    glUniform1f(intensityUniform, intensity);
     glUniform1i(filterTypeUniform, (GLint)filterType);
     
     // 어트리뷰트 설정

@@ -16,7 +16,6 @@ class ImageModel {
         let assetID: String?
         let creationDate: Date
         var appliedFilters: [String]
-        var filterIntensity: Float
         
         init(originalImage: UIImage, assetID: String? = nil) {
             self.originalImage = originalImage
@@ -24,19 +23,16 @@ class ImageModel {
             self.assetID = assetID
             self.creationDate = Date()
             self.appliedFilters = []
-            self.filterIntensity = 0.5
         }
         
-        mutating func applyFilter(name: String, filteredImage: UIImage, intensity: Float) {
+        mutating func applyFilter(name: String, filteredImage: UIImage) {
             self.currentImage = filteredImage
             self.appliedFilters.append(name)
-            self.filterIntensity = intensity
         }
         
         mutating func resetToOriginal() {
             self.currentImage = originalImage
             self.appliedFilters = []
-            self.filterIntensity = 0.5
         }
     }
     
@@ -127,16 +123,16 @@ class ImageModel {
         return currentEditingImage
     }
     
-    func updateCurrentImage(with filteredImage: UIImage, filterName: String, intensity: Float) {
+    func updateCurrentImage(with filteredImage: UIImage, filterName: String) {
         if currentEditingImage == nil {
             print("⚠️ currentEditingImage가 nil입니다")
             return
         }
         
-        print("이미지 업데이트: \(filterName), 강도: \(intensity)")
+        print("이미지 업데이트: \(filterName)")
         
         var image = currentEditingImage!
-        image.applyFilter(name: filterName, filteredImage: filteredImage, intensity: intensity)
+        image.applyFilter(name: filterName, filteredImage: filteredImage)
         
         // 현재 편집 중인 이미지 업데이트
         if let index = editableImages.firstIndex(where: { $0.assetID == image.assetID }) {

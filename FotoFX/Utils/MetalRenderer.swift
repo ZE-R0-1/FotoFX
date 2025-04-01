@@ -35,8 +35,7 @@ class MetalRenderer {
         
         kernel void applyFilter(texture2d<float, access::read> inTexture [[texture(0)]],
                                texture2d<float, access::write> outTexture [[texture(1)]],
-                               constant float &intensity [[buffer(0)]],
-                               constant int &filterType [[buffer(1)]],
+                               constant int &filterType [[buffer(0)]],
                                uint2 gid [[thread_position_in_grid]]) {
             // 범위 체크
             if (gid.x >= outTexture.get_width() || gid.y >= outTexture.get_height()) {
@@ -53,16 +52,16 @@ class MetalRenderer {
             // 필터 타입에 따라 분기
             switch (filterType) {
                 case 2: // Noir
-                    result = float4(mix(color.rgb, float3(luminance), intensity), color.a);
+                    result = float4(float3(luminance), color.a);
                     break;
                 case 4: // Fade
-                    result = float4(mix(color.rgb, float3(0.8, 0.8, 0.8), intensity * 0.5), color.a);
+                    result = float4(mix(color.rgb, float3(0.8, 0.8, 0.8), 0.5), color.a);
                     break;
                 case 6: // Tonal
-                    result = float4(mix(color.rgb, float3(luminance * 1.1, luminance, luminance * 0.9), intensity), color.a);
+                    result = float4(float3(luminance * 1.1, luminance, luminance * 0.9), color.a);
                     break;
                 case 8: // Invert
-                    result = float4(mix(color.rgb, float3(1.0) - color.rgb, intensity), color.a);
+                    result = float4(float3(1.0) - color.rgb, color.a);
                     break;
                 default:
                     // 기본값은 원본
@@ -89,7 +88,7 @@ class MetalRenderer {
         }
     }
     
-    func applyFilter(to image: UIImage, filterType: Int, intensity: Float) -> UIImage? {
+    func applyFilter(to image: UIImage, filterType: Int) -> UIImage? {
         guard let pipelineState = pipelineState,
               let cgImage = image.cgImage else { return nil }
         
@@ -125,11 +124,8 @@ class MetalRenderer {
         commandEncoder.setTexture(inTexture, index: 0)
         commandEncoder.setTexture(outTexture, index: 1)
         
-        var intensityValue = intensity
-        commandEncoder.setBytes(&intensityValue, length: MemoryLayout<Float>.size, index: 0)
-        
         var filterTypeValue = filterType
-        commandEncoder.setBytes(&filterTypeValue, length: MemoryLayout<Int>.size, index: 1)
+        commandEncoder.setBytes(&filterTypeValue, length: MemoryLayout<Int>.size, index: 0)
         
         // 스레드 그룹 설정
         let threadGroupSize = MTLSize(width: 16, height: 16, depth: 1)
@@ -189,4 +185,5 @@ class MetalRenderer {
         data.deallocate()
         
         return UIImage(cgImage: cgImage, scale: 1.0, orientation: .up)
-    }}
+    }
+}
