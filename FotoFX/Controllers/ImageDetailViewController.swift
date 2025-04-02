@@ -104,8 +104,6 @@ class ImageDetailViewController: UIViewController {
         // 네비게이션 바 설정
         setupNavigationBar()
         
-        view.addSubview(separatorLine)
-        
         // 하단 툴바 추가
         view.addSubview(bottomToolbarContainer)
         
