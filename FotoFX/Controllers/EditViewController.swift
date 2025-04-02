@@ -48,7 +48,7 @@ class EditViewController: UIViewController {
     }()
     
     private var metalRenderer: MetalRenderer?
-    private var openGLRenderer: OpenGLRenderer?
+    private var openGLRenderer: GeneralizedOpenGLRenderer?
     
     private var filterNames: [String] {
         return FilterManager.shared.filterNames
@@ -147,12 +147,18 @@ class EditViewController: UIViewController {
     
     private func setupRenderers() {
         metalRenderer = MetalRenderer()
-        openGLRenderer = OpenGLRenderer()
+        openGLRenderer = GeneralizedOpenGLRenderer()
         
         if metalRenderer == nil {
             print("⚠️ Metal 렌더러 초기화 실패")
         } else {
             print("✅ Metal 렌더러 초기화 성공")
+        }
+        
+        if openGLRenderer == nil {
+            print("⚠️ OpenGL 렌더러 초기화 실패")
+        } else {
+            print("✅ OpenGL 렌더러 초기화 성공")
         }
     }
     
@@ -186,7 +192,7 @@ class EditViewController: UIViewController {
                     filteredPreview = self.metalRenderer?.applyFilter(to: previewImage, filter: filter)
                 } else if filter.renderer == "opengl" {
                     // OpenGL 필터
-                    filteredPreview = self.openGLRenderer?.applyFilter(previewImage, filterType: filter.filterType)
+                    filteredPreview = self.openGLRenderer?.applyFilter(to: previewImage, filter: filter)
                 }
                 
                 // 메인 스레드에서 UI 업데이트
@@ -201,7 +207,6 @@ class EditViewController: UIViewController {
             }
         }
     }
-    
     
     // 이미지 리사이징 메서드
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
@@ -320,17 +325,19 @@ class EditViewController: UIViewController {
         }
         
         // 필터 적용
-        print("\(filter.name) 필터 적용 중...")
+        print("\(filter.name) 필터 적용 중 (렌더러: \(filter.renderer))...")
         print("필터 파라미터: \(filter.parameters)")
         if let constants = filter.shaderConstants {
             print("셰이더 상수: \(constants)")
         }
         
-        // Metal 렌더러 사용
+        // 렌더러 종류에 따라 필터 적용
         var filteredResult: UIImage? = nil
         
         if filter.renderer == "metal" {
             filteredResult = metalRenderer?.applyFilter(to: originalImage, filter: filter)
+        } else if filter.renderer == "opengl" {
+            filteredResult = openGLRenderer?.applyFilter(to: originalImage, filter: filter)
         }
         
         // 필터 적용 실패 시 안전하게 처리
