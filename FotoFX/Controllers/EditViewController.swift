@@ -342,7 +342,25 @@ class EditViewController: UIViewController {
             NotificationCenter.default.post(name: Notification.Name("ImageSavedNotification"), object: nil)
             
             showAlert(title: "저장 완료", message: "이미지가 갤러리에 저장되었습니다.") { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
+                guard let self = self else { return }
+                
+                // 카메라에서 왔을 경우 RecentItemsViewController로 이동
+                if self.source == .camera {
+                    // 네비게이션 스택에서 RecentItemsViewController 찾기
+                    for controller in self.navigationController?.viewControllers ?? [] {
+                        if controller is RecentItemsViewController {
+                            self.navigationController?.popToViewController(controller, animated: true)
+                            return
+                        }
+                    }
+                    
+                    // RecentItemsViewController가 스택에 없으면 새로 만들어서 푸시
+                    let recentItemsVC = RecentItemsViewController()
+                    self.navigationController?.pushViewController(recentItemsVC, animated: true)
+                } else {
+                    // 갤러리에서 왔을 경우 기존처럼 이전 화면으로
+                    self.navigationController?.popViewController(animated: true)
+                }
             }
         }
     }
