@@ -93,7 +93,7 @@ class MainViewController: UIViewController {
     }
     
     private func setupViews() {
-        title = "FotoFX"
+        title = "최근항목"
         view.backgroundColor = .systemBackground
         
         view.addSubview(collectionView)
