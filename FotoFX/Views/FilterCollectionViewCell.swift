@@ -8,12 +8,13 @@
 import UIKit
 
 class FilterCollectionViewCell: UICollectionViewCell {
+    // MARK: - UI Components
     private let filterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 8
         imageView.clipsToBounds = true
-        imageView.backgroundColor = .darkGray // 이미지 로드 전 배경색
+        imageView.backgroundColor = .darkGray
         return imageView
     }()
     
@@ -25,6 +26,7 @@ class FilterCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    // MARK: - Properties
     var filterName: String? {
         didSet {
             nameLabel.text = filterName
@@ -36,6 +38,7 @@ class FilterCollectionViewCell: UICollectionViewCell {
         filterImageView.image = image
     }
     
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -45,6 +48,7 @@ class FilterCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UI Setup
     private func setupViews() {
         addSubview(filterImageView)
         addSubview(nameLabel)

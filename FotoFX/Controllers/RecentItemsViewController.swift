@@ -9,16 +9,14 @@ import UIKit
 import Photos
 
 class RecentItemsViewController: UIViewController {
-    
+    // MARK: - Enums
     // 그리드 상태를 추적하는 열거형 추가
     enum GridType {
         case threeColumns // 기본 3열 레이아웃
         case fourColumns // 4열 레이아웃
     }
     
-    // 현재 그리드 타입 상태
-    private var currentGridType: GridType = .threeColumns
-    
+    // MARK: - UI Components
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -43,15 +41,20 @@ class RecentItemsViewController: UIViewController {
         return button
     }()
     
+    // MARK: - Properties
     private let imageModel = ImageModel()
     
     // 이미지를 이미 로드했는지 추적하는 플래그 추가
     private var hasLoadedImages = false
     
+    // 현재 그리드 타입 상태
+    private var currentGridType: GridType = .threeColumns
+    
     // 편집 모드 관련 속성 추가
     private var isEditMode = false
     private var editingIndexPaths = Set<IndexPath>()
     
+    // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -105,6 +108,7 @@ class RecentItemsViewController: UIViewController {
         fetchPhotos()
     }
     
+    // MARK: - UI Setup
     private func setupViews() {
         // 기본 뷰 설정
         title = "최근 항목"
@@ -193,6 +197,7 @@ class RecentItemsViewController: UIViewController {
         collectionView.reloadData()
     }
     
+    // MARK: - Permission Methods
     private func checkPhotoLibraryPermissions() {
         PHPhotoLibrary.requestAuthorization { [weak self] status in
             switch status {
@@ -254,6 +259,7 @@ class RecentItemsViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    // MARK: - Image Loading Methods
     private func fetchPhotos() {
         print("사진 가져오기 시작")
         
@@ -287,6 +293,7 @@ class RecentItemsViewController: UIViewController {
         }
     }
     
+    // MARK: - Image Management Methods
     // 이미지 삭제 메서드
     private func deleteImage(at indexPath: IndexPath) {
         // 삭제 확인 다이얼로그
@@ -340,6 +347,7 @@ class RecentItemsViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    // MARK: - Action Handlers
     @objc private func cameraButtonTapped() {
         print("카메라 버튼 탭됨")
         
@@ -372,6 +380,7 @@ class RecentItemsViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView DataSource & Delegate
 extension RecentItemsViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageModel.getEditableImagesCount()

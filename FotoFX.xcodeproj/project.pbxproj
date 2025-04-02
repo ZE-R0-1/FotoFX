@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE741F1D2D9D5CC3004CCC8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE741F112D9D5CC3004CCC8A /* Assets.xcassets */; };
+		CE741F1E2D9D5CC3004CCC8A /* filters.json in Resources */ = {isa = PBXBuildFile; fileRef = CE741F182D9D5CC3004CCC8A /* filters.json */; };
+		CE741F202D9D5CC3004CCC8A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE741F1B2D9D5CC3004CCC8A /* LaunchScreen.storyboard */; };
+		CE741F212D9D5CC3004CCC8A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F002D9D5CC3004CCC8A /* AppDelegate.swift */; };
+		CE741F222D9D5CC3004CCC8A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F012D9D5CC3004CCC8A /* SceneDelegate.swift */; };
+		CE741F232D9D5CC3004CCC8A /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F032D9D5CC3004CCC8A /* CameraViewController.swift */; };
+		CE741F242D9D5CC3004CCC8A /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F042D9D5CC3004CCC8A /* EditViewController.swift */; };
+		CE741F252D9D5CC3004CCC8A /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F052D9D5CC3004CCC8A /* HomeViewController.swift */; };
+		CE741F262D9D5CC3004CCC8A /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F062D9D5CC3004CCC8A /* ImageDetailViewController.swift */; };
+		CE741F272D9D5CC3004CCC8A /* RecentItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F072D9D5CC3004CCC8A /* RecentItemsViewController.swift */; };
+		CE741F282D9D5CC3004CCC8A /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F092D9D5CC3004CCC8A /* ImageModel.swift */; };
+		CE741F292D9D5CC3004CCC8A /* GeneralizedOpenGLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F0C2D9D5CC3004CCC8A /* GeneralizedOpenGLRenderer.swift */; };
+		CE741F2A2D9D5CC3004CCC8A /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F0D2D9D5CC3004CCC8A /* MetalRenderer.swift */; };
+		CE741F2B2D9D5CC3004CCC8A /* OpenGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE741F0F2D9D5CC3004CCC8A /* OpenGLRenderer.m */; };
+		CE741F2C2D9D5CC3004CCC8A /* FilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F132D9D5CC3004CCC8A /* FilterManager.swift */; };
+		CE741F2D2D9D5CC3004CCC8A /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F152D9D5CC3004CCC8A /* FilterCollectionViewCell.swift */; };
+		CE741F2F2D9D5DC0004CCC8A /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE741F2E2D9D5DC0004CCC8A /* FilterModel.swift */; };
 		CEB932D32D8FB6FC00FCB8CB /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB932D22D8FB6FC00FCB8CB /* Metal.framework */; };
 		CEB932D52D8FB70500FCB8CB /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB932D42D8FB70500FCB8CB /* MetalKit.framework */; };
 		CEB932D72D8FB70C00FCB8CB /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB932D62D8FB70C00FCB8CB /* OpenGLES.framework */; };
@@ -16,6 +33,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE741F002D9D5CC3004CCC8A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CE741F012D9D5CC3004CCC8A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		CE741F032D9D5CC3004CCC8A /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		CE741F042D9D5CC3004CCC8A /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		CE741F052D9D5CC3004CCC8A /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		CE741F062D9D5CC3004CCC8A /* ImageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		CE741F072D9D5CC3004CCC8A /* RecentItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentItemsViewController.swift; sourceTree = "<group>"; };
+		CE741F092D9D5CC3004CCC8A /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
+		CE741F0B2D9D5CC3004CCC8A /* FotoFX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FotoFX-Bridging-Header.h"; sourceTree = "<group>"; };
+		CE741F0C2D9D5CC3004CCC8A /* GeneralizedOpenGLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralizedOpenGLRenderer.swift; sourceTree = "<group>"; };
+		CE741F0D2D9D5CC3004CCC8A /* MetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
+		CE741F0E2D9D5CC3004CCC8A /* OpenGLRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenGLRenderer.h; sourceTree = "<group>"; };
+		CE741F0F2D9D5CC3004CCC8A /* OpenGLRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenGLRenderer.m; sourceTree = "<group>"; };
+		CE741F112D9D5CC3004CCC8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CE741F132D9D5CC3004CCC8A /* FilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManager.swift; sourceTree = "<group>"; };
+		CE741F152D9D5CC3004CCC8A /* FilterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewCell.swift; sourceTree = "<group>"; };
+		CE741F172D9D5CC3004CCC8A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = en.lproj/filters.json; sourceTree = "<group>"; };
+		CE741F192D9D5CC3004CCC8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CE741F1A2D9D5CC3004CCC8A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CE741F2E2D9D5DC0004CCC8A /* FilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModel.swift; sourceTree = "<group>"; };
 		CEB9329C2D8D5E6700FCB8CB /* FotoFX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FotoFX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB932D22D8FB6FC00FCB8CB /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		CEB932D42D8FB70500FCB8CB /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
@@ -24,27 +61,6 @@
 		CEB932DA2D8FB71C00FCB8CB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		CEB932DC2D8FB72300FCB8CB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CEB932AE2D8D5E6900FCB8CB /* Exceptions for "FotoFX" folder in "FotoFX" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = CEB9329B2D8D5E6700FCB8CB /* FotoFX */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		CEB9329E2D8D5E6700FCB8CB /* FotoFX */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CEB932AE2D8D5E6900FCB8CB /* Exceptions for "FotoFX" folder in "FotoFX" target */,
-			);
-			path = FotoFX;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		CEB932992D8D5E6700FCB8CB /* Frameworks */ = {
@@ -63,10 +79,93 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE741F022D9D5CC3004CCC8A /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F002D9D5CC3004CCC8A /* AppDelegate.swift */,
+				CE741F012D9D5CC3004CCC8A /* SceneDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		CE741F082D9D5CC3004CCC8A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F052D9D5CC3004CCC8A /* HomeViewController.swift */,
+				CE741F072D9D5CC3004CCC8A /* RecentItemsViewController.swift */,
+				CE741F062D9D5CC3004CCC8A /* ImageDetailViewController.swift */,
+				CE741F042D9D5CC3004CCC8A /* EditViewController.swift */,
+				CE741F032D9D5CC3004CCC8A /* CameraViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		CE741F0A2D9D5CC3004CCC8A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F092D9D5CC3004CCC8A /* ImageModel.swift */,
+				CE741F2E2D9D5DC0004CCC8A /* FilterModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CE741F102D9D5CC3004CCC8A /* Renderers */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F0B2D9D5CC3004CCC8A /* FotoFX-Bridging-Header.h */,
+				CE741F0C2D9D5CC3004CCC8A /* GeneralizedOpenGLRenderer.swift */,
+				CE741F0D2D9D5CC3004CCC8A /* MetalRenderer.swift */,
+				CE741F0E2D9D5CC3004CCC8A /* OpenGLRenderer.h */,
+				CE741F0F2D9D5CC3004CCC8A /* OpenGLRenderer.m */,
+			);
+			path = Renderers;
+			sourceTree = "<group>";
+		};
+		CE741F122D9D5CC3004CCC8A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F112D9D5CC3004CCC8A /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CE741F142D9D5CC3004CCC8A /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F132D9D5CC3004CCC8A /* FilterManager.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		CE741F162D9D5CC3004CCC8A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F152D9D5CC3004CCC8A /* FilterCollectionViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		CE741F1C2D9D5CC3004CCC8A /* FotoFX */ = {
+			isa = PBXGroup;
+			children = (
+				CE741F022D9D5CC3004CCC8A /* Application */,
+				CE741F0A2D9D5CC3004CCC8A /* Models */,
+				CE741F162D9D5CC3004CCC8A /* Views */,
+				CE741F082D9D5CC3004CCC8A /* Controllers */,
+				CE741F102D9D5CC3004CCC8A /* Renderers */,
+				CE741F122D9D5CC3004CCC8A /* Resources */,
+				CE741F142D9D5CC3004CCC8A /* Service */,
+				CE741F182D9D5CC3004CCC8A /* filters.json */,
+				CE741F192D9D5CC3004CCC8A /* Info.plist */,
+				CE741F1B2D9D5CC3004CCC8A /* LaunchScreen.storyboard */,
+			);
+			path = FotoFX;
+			sourceTree = "<group>";
+		};
 		CEB932932D8D5E6700FCB8CB = {
 			isa = PBXGroup;
 			children = (
-				CEB9329E2D8D5E6700FCB8CB /* FotoFX */,
+				CE741F1C2D9D5CC3004CCC8A /* FotoFX */,
 				CEB932D12D8FB6FB00FCB8CB /* Frameworks */,
 				CEB9329D2D8D5E6700FCB8CB /* Products */,
 			);
@@ -107,9 +206,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				CEB9329E2D8D5E6700FCB8CB /* FotoFX */,
 			);
 			name = FotoFX;
 			packageProductDependencies = (
@@ -158,6 +254,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE741F1D2D9D5CC3004CCC8A /* Assets.xcassets in Resources */,
+				CE741F1E2D9D5CC3004CCC8A /* filters.json in Resources */,
+				CE741F202D9D5CC3004CCC8A /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,10 +267,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE741F212D9D5CC3004CCC8A /* AppDelegate.swift in Sources */,
+				CE741F222D9D5CC3004CCC8A /* SceneDelegate.swift in Sources */,
+				CE741F232D9D5CC3004CCC8A /* CameraViewController.swift in Sources */,
+				CE741F242D9D5CC3004CCC8A /* EditViewController.swift in Sources */,
+				CE741F252D9D5CC3004CCC8A /* HomeViewController.swift in Sources */,
+				CE741F262D9D5CC3004CCC8A /* ImageDetailViewController.swift in Sources */,
+				CE741F272D9D5CC3004CCC8A /* RecentItemsViewController.swift in Sources */,
+				CE741F282D9D5CC3004CCC8A /* ImageModel.swift in Sources */,
+				CE741F292D9D5CC3004CCC8A /* GeneralizedOpenGLRenderer.swift in Sources */,
+				CE741F2A2D9D5CC3004CCC8A /* MetalRenderer.swift in Sources */,
+				CE741F2B2D9D5CC3004CCC8A /* OpenGLRenderer.m in Sources */,
+				CE741F2C2D9D5CC3004CCC8A /* FilterManager.swift in Sources */,
+				CE741F2D2D9D5CC3004CCC8A /* FilterCollectionViewCell.swift in Sources */,
+				CE741F2F2D9D5DC0004CCC8A /* FilterModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CE741F182D9D5CC3004CCC8A /* filters.json */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE741F172D9D5CC3004CCC8A /* en */,
+			);
+			name = filters.json;
+			sourceTree = "<group>";
+		};
+		CE741F1B2D9D5CC3004CCC8A /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE741F1A2D9D5CC3004CCC8A /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		CEB932B02D8D5E6900FCB8CB /* Debug */ = {
@@ -203,7 +335,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/Utils/FotoFX-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/Renderers/FotoFX-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -239,7 +371,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/Utils/FotoFX-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/Renderers/FotoFX-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -15,7 +15,7 @@ enum EditSource {
 }
 
 class EditViewController: UIViewController {
-    
+    // MARK: - UI Components
     var imageModel: ImageModel!
     var editableImage: ImageModel.EditableImage!
     private var filteredImage: UIImage?
@@ -87,6 +87,7 @@ class EditViewController: UIViewController {
     // 미리보기 이미지 캐시 추가
     private var previewImages: [UIImage?] = []
     
+    // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -104,6 +105,15 @@ class EditViewController: UIViewController {
         // 네비게이션 바 숨기기
         navigationController?.navigationBar.isHidden = true
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // 화면을 떠날 때 네비게이션 바를 다시 표시
+        navigationController?.navigationBar.isHidden = false
+    }
+    
+    // MARK: - UI Setup
     private func setupViews() {
         view.backgroundColor = .black
         
@@ -184,6 +194,7 @@ class EditViewController: UIViewController {
         ])
     }
 
+    // MARK: - Action Handlers
     @objc private func cancelButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
@@ -193,6 +204,7 @@ class EditViewController: UIViewController {
         checkPhotoLibraryPermissionAndSave()
     }
     
+    // MARK: - Renderer Setup
     private func setupRenderers() {
         metalRenderer = MetalRenderer()
         openGLRenderer = GeneralizedOpenGLRenderer()
@@ -210,6 +222,7 @@ class EditViewController: UIViewController {
         }
     }
     
+    // MARK: - Filter Processing
     // 미리보기 이미지 생성 메서드
     private func generatePreviewImages() {
         // 필터 매니저에서 필터 목록 가져오기
@@ -256,6 +269,7 @@ class EditViewController: UIViewController {
         }
     }
     
+    // MARK: - Image Utilities
     // 이미지 리사이징 메서드
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
         let size = image.size
@@ -274,6 +288,7 @@ class EditViewController: UIViewController {
         return newImage ?? image
     }
     
+    // MARK: - Permissions & Saving
     private func checkPhotoLibraryPermissionAndSave() {
         let status = PHPhotoLibrary.authorizationStatus()
         
@@ -406,6 +421,7 @@ class EditViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView DataSource & Delegate
 extension EditViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filterNames.count

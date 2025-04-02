@@ -9,14 +9,14 @@ import UIKit
 import AVFoundation
 
 class CameraViewController: UIViewController {
-    
+    // MARK: - Properties
     private let captureSession = AVCaptureSession()
     private let photoOutput = AVCapturePhotoOutput()
     private var previewLayer: AVCaptureVideoPreviewLayer?
     
     // 카메라가 이미 설정되었는지 추적하는 플래그 추가
     private var isCameraSetup = false
-    
+    // MARK: - UI Components
     // 로딩 인디케이터 추가
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
@@ -36,10 +36,11 @@ class CameraViewController: UIViewController {
         return button
     }()
     
+    // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        // 여기서는 카메라 설정을 바로 시작하지 않음
+        setupNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,6 +68,7 @@ class CameraViewController: UIViewController {
         }
     }
     
+    // MARK: - Camera Management
     private func checkCameraPermission() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -114,6 +116,7 @@ class CameraViewController: UIViewController {
         }
     }
     
+    // MARK: - UI Setup
     private func setupViews() {
         view.backgroundColor = .black
         
@@ -134,6 +137,36 @@ class CameraViewController: UIViewController {
         ])
         
         captureButton.addTarget(self, action: #selector(captureButtonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: - NavigationBar Setup
+    private func setupNavigationBar() {
+        // 네비게이션 바 표시
+        navigationController?.navigationBar.isHidden = false
+        
+        // 타이틀 설정
+        title = "카메라"
+        
+        // 뒤로가기 버튼 커스텀
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.left"),
+            style: .plain,
+            target: self,
+            action: #selector(backButtonTapped)
+        )
+        backButton.tintColor = .white
+        navigationItem.leftBarButtonItem = backButton
+        
+        // 네비게이션 바 스타일 설정 (어두운 배경에 밝은 텍스트)
+        navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.tintColor = .white
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.white
+        ]
+    }
+
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupCamera() {
@@ -179,6 +212,7 @@ class CameraViewController: UIViewController {
         }
     }
     
+    // MARK: - Permission Handling
     private func showPermissionAlert() {
         DispatchQueue.main.async { [weak self] in
             let alert = UIAlertController(
@@ -202,6 +236,7 @@ class CameraViewController: UIViewController {
         }
     }
     
+    // MARK: - Action Handlers
     @objc private func captureButtonTapped() {
         // 명시적으로 JPEG 포맷 지정
         let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
@@ -229,6 +264,7 @@ class CameraViewController: UIViewController {
     }
 }
 
+// MARK: - AVCapturePhotoCaptureDelegate
 extension CameraViewController: AVCapturePhotoCaptureDelegate {
     // iOS 11 이상에서 사용하는 현재 메서드
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
@@ -264,6 +300,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         }
     }
     
+    // MARK: - Image Processing
     // 이미지 크기 조정 메서드 추가
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
         let size = image.size

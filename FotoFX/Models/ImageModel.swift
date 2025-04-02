@@ -9,7 +9,7 @@ import UIKit
 import Photos
 
 class ImageModel {
-    // 편집할 이미지 정보를 담는 모델
+    // MARK: - Model Structures
     struct EditableImage {
         let originalImage: UIImage
         var currentImage: UIImage
@@ -36,11 +36,11 @@ class ImageModel {
         }
     }
     
+    // MARK: - Properties
     private var editableImages: [EditableImage] = []
     private(set) var currentEditingImage: EditableImage?
     
-    // 컬렉션뷰에서 필요한 메서드들
-    
+    // MARK: - Public Methods
     // editableImages 배열의 개수 반환
     func getEditableImagesCount() -> Int {
         return editableImages.count
@@ -52,7 +52,7 @@ class ImageModel {
         return editableImages[index].currentImage
     }
     
-    // 수정된 메서드: 동기화 개선 및 기존 데이터 초기화 추가
+    // MARK: - Image Management Methods
     func fetchImagesFromGallery(completion: @escaping ([UIImage]) -> Void) {
         print("ImageModel - fetchImagesFromGallery 시작")
         var images: [UIImage] = []

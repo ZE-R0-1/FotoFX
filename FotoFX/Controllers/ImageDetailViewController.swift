@@ -9,7 +9,7 @@ import UIKit
 import Photos
 
 class ImageDetailViewController: UIViewController {
-    
+    // MARK: - Properties
     // 이미지 모델과 현재 이미지 인덱스
     var imageModel: ImageModel!
     var currentIndex: Int = 0
@@ -19,6 +19,7 @@ class ImageDetailViewController: UIViewController {
     // 페이지 뷰 컨트롤러
     private var pageViewController: UIPageViewController!
     
+    // MARK: - UI Components
     // 하단 툴바 컨테이너
     private let bottomToolbarContainer: UIView = {
         let view = UIView()
@@ -91,6 +92,7 @@ class ImageDetailViewController: UIViewController {
         return view
     }()
     
+    // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -98,6 +100,7 @@ class ImageDetailViewController: UIViewController {
         updateTitle()
     }
     
+    // MARK: - UI Setup
     private func setupViews() {
         view.backgroundColor = .white
         
@@ -205,6 +208,7 @@ class ImageDetailViewController: UIViewController {
         editContainer.isUserInteractionEnabled = true
     }
     
+    // MARK: - PageViewController Setup
     private func setupPageViewController() {
         // 페이지 뷰 컨트롤러 초기화
         pageViewController = UIPageViewController(
@@ -269,6 +273,7 @@ class ImageDetailViewController: UIViewController {
         return pageContentVC
     }
     
+    // MARK: - NavigationBar Setup
     private func setupNavigationBar() {
         // 네비게이션 바 표시
         navigationController?.navigationBar.isHidden = false
@@ -316,6 +321,7 @@ class ImageDetailViewController: UIViewController {
         title = "\(currentIndex + 1) / \(totalCount)"
     }
     
+    // MARK: - Action Handlers
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }

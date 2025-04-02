@@ -8,7 +8,7 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-    
+    // MARK: - UI Components
     // 아이콘 버튼을 담을 컨테이너 뷰
     private let iconsContainerView: UIView = {
         let view = UIView()
@@ -55,6 +55,7 @@ class HomeViewController: UIViewController {
         return view
     }()
     
+    // MARK: - Helper Methods
     // 각 기능 버튼과 레이블을 포함하는 메서드
     private func createFeatureButton(imageName: String, title: String) -> UIView {
         let containerView = UIView()
@@ -140,6 +141,7 @@ class HomeViewController: UIViewController {
         }
     }
     
+    // MARK: - Action Handlers
     // 버튼 탭 이벤트 처리
     @objc private func featureButtonTapped(_ gesture: UITapGestureRecognizer) {
         guard let view = gesture.view else { return }
@@ -194,11 +196,14 @@ class HomeViewController: UIViewController {
         collectionView.dataSource = self
         return collectionView
     }()
+    
+    // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
     
+    // MARK: - UI Setup
     private func setupViews() {
         view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
         
@@ -325,7 +330,7 @@ class HomeViewController: UIViewController {
     }
 }
 
-// MARK: - UICollectionView 데이터 소스 및 델리게이트 구현
+// MARK: - CollectionView DataSource & Delegate
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4 // 샘플 추천 항목 4개
