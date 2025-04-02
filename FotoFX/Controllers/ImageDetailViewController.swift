@@ -345,6 +345,9 @@ class ImageDetailViewController: UIViewController {
             self.imageModel.deleteImage(at: indexToDelete) { (success, error) in
                 DispatchQueue.main.async {
                     if success {
+                        // 여기에 삭제 알림 추가
+                        NotificationCenter.default.post(name: Notification.Name("ImageDeletedNotification"), object: nil)
+                        
                         // 전체 이미지 개수 갱신
                         self.totalCount = self.imageModel.getEditableImagesCount()
                         

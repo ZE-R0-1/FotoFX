@@ -50,25 +50,24 @@ class RecentItemsViewController: UIViewController {
     // 현재 그리드 타입 상태
     private var currentGridType: GridType = .threeColumns
     
-    // 편집 모드 관련 속성 추가
-    private var isEditMode = false
-    private var editingIndexPaths = Set<IndexPath>()
-    
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        
-        // 롱 프레스 제스처 인식기 추가
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        longPressGesture.minimumPressDuration = 0.5  // 0.5초 길게 누르면 활성화
-        collectionView.addGestureRecognizer(longPressGesture)
         
         // 이미지 저장 알림 구독
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleImageSaved),
             name: Notification.Name("ImageSavedNotification"),
+            object: nil
+        )
+        
+        // 이미지 삭제 알림 구독
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleImageDeleted),
+            name: Notification.Name("ImageDeletedNotification"),
             object: nil
         )
         
@@ -106,6 +105,16 @@ class RecentItemsViewController: UIViewController {
     func refreshGallery() {
         // hasLoadedImages 플래그를 재설정하지 않음 (로드 상태는 유지)
         fetchPhotos()
+    }
+    
+    // 이미지 삭제 알림 처리 메서드
+    @objc private func handleImageDeleted() {
+        print("이미지 삭제 알림 수신")
+        
+        // 약간의 지연을 두고 갱신 (사진 라이브러리에 변경이 완전히 반영되는데 시간이 걸릴 수 있음)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.refreshGallery()
+        }
     }
     
     // MARK: - UI Setup
@@ -293,90 +302,12 @@ class RecentItemsViewController: UIViewController {
         }
     }
     
-    // MARK: - Image Management Methods
-    // 이미지 삭제 메서드
-    private func deleteImage(at indexPath: IndexPath) {
-        // 삭제 확인 다이얼로그
-        let alert = UIAlertController(
-            title: "이미지 삭제",
-            message: "이 이미지를 갤러리에서도 삭제하시겠습니까?",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
-        
-        alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
-            
-            // 로딩 인디케이터 표시
-            let activityIndicator = UIActivityIndicatorView(style: .medium)
-            activityIndicator.center = self.view.center
-            activityIndicator.startAnimating()
-            self.view.addSubview(activityIndicator)
-            
-            // 이미지 모델에서 이미지 삭제 요청
-            self.imageModel.deleteImage(at: indexPath.item) { (success, error) in
-                DispatchQueue.main.async {
-                    activityIndicator.stopAnimating()
-                    activityIndicator.removeFromSuperview()
-                    
-                    if success {
-                        // 컬렉션뷰에서 셀 삭제
-                        if self.collectionView.numberOfItems(inSection: 0) > indexPath.item {
-                            self.collectionView.deleteItems(at: [indexPath])
-                        } else {
-                            self.collectionView.reloadData()
-                        }
-                        
-                        // 편집 중인 인덱스에서 제거
-                        self.editingIndexPaths.remove(indexPath)
-                    } else {
-                        // 삭제 실패 처리
-                        let errorAlert = UIAlertController(
-                            title: "삭제 실패",
-                            message: error?.localizedDescription ?? "이미지를 삭제하는 중 오류가 발생했습니다.",
-                            preferredStyle: .alert
-                        )
-                        errorAlert.addAction(UIAlertAction(title: "확인", style: .default))
-                        self.present(errorAlert, animated: true)
-                    }
-                }
-            }
-        })
-        
-        present(alert, animated: true)
-    }
-    
     // MARK: - Action Handlers
     @objc private func cameraButtonTapped() {
         print("카메라 버튼 탭됨")
         
         let cameraVC = CameraViewController()
         self.navigationController?.pushViewController(cameraVC, animated: true)
-    }
-    
-    // 롱프레스 제스처 핸들러
-    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        if gesture.state == .began {
-            let point = gesture.location(in: collectionView)
-            if let indexPath = collectionView.indexPathForItem(at: point) {
-                // 편집 모드로 전환
-                if !isEditMode {
-                    isEditMode = true
-                }
-                
-                // 해당 셀 업데이트
-                editingIndexPaths.insert(indexPath)
-                collectionView.reloadItems(at: [indexPath])
-            }
-        }
-    }
-    
-    // 삭제 버튼 탭 핸들러
-    @objc private func deleteButtonTapped(_ sender: UIButton) {
-        let index = sender.tag
-        let indexPath = IndexPath(item: index, section: 0)
-        deleteImage(at: indexPath)
     }
 }
 
@@ -410,47 +341,15 @@ extension RecentItemsViewController: UICollectionViewDelegate, UICollectionViewD
             imageView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor)
         ])
-        
-        // 삭제 버튼 추가 (편집 모드이거나 이 셀이 편집 중인 경우)
-        if isEditMode || editingIndexPaths.contains(indexPath) {
-            let deleteButton = UIButton(type: .system)
-            deleteButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
-            deleteButton.tintColor = .red
-            deleteButton.backgroundColor = .white
-            deleteButton.layer.cornerRadius = 15
-            deleteButton.tag = indexPath.item  // 태그에 인덱스 저장
-            deleteButton.addTarget(self, action: #selector(deleteButtonTapped(_:)), for: .touchUpInside)
-            
-            cell.contentView.addSubview(deleteButton)
-            
-            deleteButton.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                deleteButton.topAnchor.constraint(equalTo: cell.contentView.topAnchor, constant: 5),
-                deleteButton.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -5),
-                deleteButton.widthAnchor.constraint(equalToConstant: 30),
-                deleteButton.heightAnchor.constraint(equalToConstant: 30)
-            ])
-        }
-        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 편집 모드가 아닐 때만 이미지 편집 화면으로 이동
-        if !isEditMode {
-            let detailVC = ImageDetailViewController()
-            detailVC.imageModel = imageModel
-            detailVC.currentIndex = indexPath.item
-            navigationController?.pushViewController(detailVC, animated: true)
-        } else {
-            // 편집 모드에서는 선택/해제 토글
-            if editingIndexPaths.contains(indexPath) {
-                editingIndexPaths.remove(indexPath)
-            } else {
-                editingIndexPaths.insert(indexPath)
-            }
-            collectionView.reloadItems(at: [indexPath])
-        }
+        // 이미지 편집 화면으로 이동
+        let detailVC = ImageDetailViewController()
+        detailVC.imageModel = imageModel
+        detailVC.currentIndex = indexPath.item
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
