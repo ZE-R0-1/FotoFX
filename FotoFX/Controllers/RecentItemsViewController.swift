@@ -429,13 +429,10 @@ extension RecentItemsViewController: UICollectionViewDelegate, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // 편집 모드가 아닐 때만 이미지 편집 화면으로 이동
         if !isEditMode {
-            if let selectedImage = imageModel.selectImageForEditing(at: indexPath.item) {
-                let editVC = EditViewController()
-                editVC.source = .gallery
-                editVC.imageModel = imageModel
-                editVC.editableImage = selectedImage
-                navigationController?.pushViewController(editVC, animated: true)
-            }
+            let detailVC = ImageDetailViewController()
+            detailVC.imageModel = imageModel
+            detailVC.currentIndex = indexPath.item
+            navigationController?.pushViewController(detailVC, animated: true)
         } else {
             // 편집 모드에서는 선택/해제 토글
             if editingIndexPaths.contains(indexPath) {
