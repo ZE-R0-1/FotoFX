@@ -9,7 +9,7 @@ import UIKit
 import Metal
 import MetalKit
 
-class GeneralizedMetalRenderer {
+class MetalRenderer {
     private let device: MTLDevice
     private let commandQueue: MTLCommandQueue
     private var pipelineState: MTLComputePipelineState?

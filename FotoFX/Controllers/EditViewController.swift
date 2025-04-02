@@ -47,7 +47,7 @@ class EditViewController: UIViewController {
         return button
     }()
     
-    private var metalRenderer: GeneralizedMetalRenderer?
+    private var metalRenderer: MetalRenderer?
     private var openGLRenderer: OpenGLRenderer?
     
     private var filterNames: [String] {
@@ -146,7 +146,7 @@ class EditViewController: UIViewController {
     }
     
     private func setupRenderers() {
-        metalRenderer = GeneralizedMetalRenderer()
+        metalRenderer = MetalRenderer()
         openGLRenderer = OpenGLRenderer()
         
         if metalRenderer == nil {
