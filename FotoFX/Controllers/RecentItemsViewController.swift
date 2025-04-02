@@ -1,32 +1,45 @@
 //
-//  ViewController.swift
+//  RecentItemsViewController.swift
 //  FotoFX
 //
-//  Created by USER on 3/21/25.
+//  Created by USER on 4/2/25.
 //
 
 import UIKit
 import Photos
 
-class MainViewController: UIViewController {
+class RecentItemsViewController: UIViewController {
+    
+    // 그리드 상태를 추적하는 열거형 추가
+    enum GridType {
+        case threeColumns // 기본 3열 레이아웃
+        case fourColumns // 4열 레이아웃
+    }
+    
+    // 현재 그리드 타입 상태
+    private var currentGridType: GridType = .threeColumns
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 1
-        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 2
+        layout.minimumInteritemSpacing = 2
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .white
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "PhotoCell")
         return collectionView
     }()
     
     private let cameraButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("카메라 열기", for: .normal)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
+        button.backgroundColor = .white
+        button.tintColor = .darkGray
+        button.setImage(UIImage(systemName: "camera.fill"), for: .normal)
+        button.layer.cornerRadius = 30
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        button.layer.shadowOpacity = 0.2
         return button
     }()
     
@@ -93,8 +106,12 @@ class MainViewController: UIViewController {
     }
     
     private func setupViews() {
-        title = "최근항목"
-        view.backgroundColor = .systemBackground
+        // 기본 뷰 설정
+        title = "최근 항목"
+        view.backgroundColor = .white
+        
+        // 네비게이션 바 설정
+        setupNavigationBar()
         
         view.addSubview(collectionView)
         view.addSubview(cameraButton)
@@ -108,56 +125,72 @@ class MainViewController: UIViewController {
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: cameraButton.topAnchor, constant: -20),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 2),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 2),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            cameraButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            // 카메라 버튼을 우측 하단에 배치
             cameraButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             cameraButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            cameraButton.heightAnchor.constraint(equalToConstant: 50)
+            cameraButton.widthAnchor.constraint(equalToConstant: 60),
+            cameraButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func setupNavigationBar() {
+        // 네비게이션 바 표시
+        navigationController?.navigationBar.isHidden = false
         
-        // 편집 버튼 추가 (네비게이션 바 오른쪽에)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "편집",
+        // 뒤로가기 버튼 커스터마이징
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.left"),
             style: .plain,
             target: self,
-            action: #selector(toggleEditMode)
+            action: #selector(backButtonTapped)
         )
+        backButton.tintColor = .black
+        navigationItem.leftBarButtonItem = backButton
+        
+        // 그리드 버튼 추가 - 이미지 변경
+        let gridButton = UIBarButtonItem(
+            image: UIImage(systemName: "square.grid.2x2"),
+            style: .plain,
+            target: self,
+            action: #selector(gridButtonTapped)
+        )
+        gridButton.tintColor = .black
+        navigationItem.rightBarButtonItem = gridButton
+        
+        // 네비게이션 바 타이틀 스타일 설정
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.black,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .medium)
+        ]
     }
     
-    // 편집 모드 토글 메서드
-    @objc private func toggleEditMode() {
-        isEditMode = !isEditMode
-        navigationItem.rightBarButtonItem?.title = isEditMode ? "완료" : "편집"
+    @objc private func backButtonTapped() {
+        // 홈 화면으로 돌아가기
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func gridButtonTapped() {
+        print("그리드 버튼 탭됨")
         
-        // 편집 모드 종료 시 모든 셀 초기화
-        if !isEditMode {
-            editingIndexPaths.removeAll()
+        // 그리드 타입 전환
+        switch currentGridType {
+        case .threeColumns:
+            currentGridType = .fourColumns
+            // 버튼 아이콘 변경
+            navigationItem.rightBarButtonItem?.image = UIImage(systemName: "square.grid.3x3")
+        case .fourColumns:
+            currentGridType = .threeColumns
+            // 버튼 아이콘 변경
+            navigationItem.rightBarButtonItem?.image = UIImage(systemName: "square.grid.2x2")
         }
         
-        // 모든 셀 업데이트
+        // 레이아웃 업데이트
         collectionView.reloadData()
-    }
-    
-    // 롱프레스 제스처 핸들러
-    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        if gesture.state == .began {
-            let point = gesture.location(in: collectionView)
-            if let indexPath = collectionView.indexPathForItem(at: point) {
-                // 편집 모드로 전환
-                if !isEditMode {
-                    isEditMode = true
-                    navigationItem.rightBarButtonItem?.title = "완료"
-                }
-                
-                // 해당 셀 업데이트
-                editingIndexPaths.insert(indexPath)
-                collectionView.reloadItems(at: [indexPath])
-            }
-        }
     }
     
     private func checkPhotoLibraryPermissions() {
@@ -312,11 +345,22 @@ class MainViewController: UIViewController {
         
         let cameraVC = CameraViewController()
         self.navigationController?.pushViewController(cameraVC, animated: true)
-        
-        if self.navigationController == nil {
-            print("navigationController가 nil입니다.")
-            cameraVC.modalPresentationStyle = .fullScreen
-            self.present(cameraVC, animated: true)
+    }
+    
+    // 롱프레스 제스처 핸들러
+    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let point = gesture.location(in: collectionView)
+            if let indexPath = collectionView.indexPathForItem(at: point) {
+                // 편집 모드로 전환
+                if !isEditMode {
+                    isEditMode = true
+                }
+                
+                // 해당 셀 업데이트
+                editingIndexPaths.insert(indexPath)
+                collectionView.reloadItems(at: [indexPath])
+            }
         }
     }
     
@@ -328,7 +372,7 @@ class MainViewController: UIViewController {
     }
 }
 
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension RecentItemsViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageModel.getEditableImagesCount()
     }
@@ -379,9 +423,6 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             ])
         }
         
-        cell.layer.cornerRadius = 8
-        cell.clipsToBounds = true
-        
         return cell
     }
     
@@ -407,7 +448,14 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.frame.width - 2) / 3
-        return CGSize(width: width, height: width)
+        // 그리드 타입에 따라 다른 크기 계산
+        switch currentGridType {
+        case .threeColumns:
+            let width = collectionView.frame.width / 3 - 2  // 3열 레이아웃
+            return CGSize(width: width, height: width)
+        case .fourColumns:
+            let width = collectionView.frame.width / 4 - 2  // 4열 레이아웃
+            return CGSize(width: width, height: width)
+        }
     }
 }

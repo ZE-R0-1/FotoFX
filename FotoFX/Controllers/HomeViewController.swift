@@ -147,7 +147,7 @@ class HomeViewController: UIViewController {
         switch view.tag {
         case 1: // 편집
             print("편집 버튼 탭됨")
-            let mainVC = MainViewController()
+            let mainVC = RecentItemsViewController()
             navigationController?.pushViewController(mainVC, animated: true)
             
         case 2: // 콜라주

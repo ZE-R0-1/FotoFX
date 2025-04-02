@@ -85,7 +85,7 @@ class EditViewController: UIViewController {
             // 카메라에서 온 경우에만 선택 대화상자 표시
             let alert = UIAlertController(
                 title: "이미지 편집 취소",
-                message: "편집을 취소하고 메인 화면으로 돌아가시겠습니까?",
+                message: "편집을 취소하고 돌아가시겠습니까?",
                 preferredStyle: .alert
             )
             
@@ -94,9 +94,9 @@ class EditViewController: UIViewController {
                 self.navigationController?.popViewController(animated: true)
             })
             
-            alert.addAction(UIAlertAction(title: "메인으로 돌아가기", style: .destructive) { _ in
-                // 메인 화면으로 바로 이동
-                self.navigationController?.popToRootViewController(animated: true)
+            alert.addAction(UIAlertAction(title: "최근 항목으로 돌아가기", style: .destructive) { _ in
+                // 최근 항목 화면으로 이동 (1단계만 뒤로)
+                self.navigationController?.popViewController(animated: true)
             })
             
             alert.addAction(UIAlertAction(title: "취소", style: .cancel))
@@ -108,7 +108,7 @@ class EditViewController: UIViewController {
             navigationController?.popViewController(animated: true)
         }
     }
-    
+
     private func setupViews() {
         title = "편집"
         view.backgroundColor = .systemBackground
@@ -285,8 +285,7 @@ class EditViewController: UIViewController {
             NotificationCenter.default.post(name: Notification.Name("ImageSavedNotification"), object: nil)
             
             showAlert(title: "저장 완료", message: "이미지가 갤러리에 저장되었습니다.") { [weak self] in
-                // 메인 화면으로 돌아가기
-                self?.navigationController?.popToRootViewController(animated: true)
+                self?.navigationController?.popViewController(animated: true)
             }
         }
     }
