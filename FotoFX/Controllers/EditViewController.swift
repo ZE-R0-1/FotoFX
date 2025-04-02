@@ -28,25 +28,55 @@ class EditViewController: UIViewController {
         return imageView
     }()
     
+    private let bottomContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        return view
+    }()
+    
+    private let filterLabel: UILabel = {
+        let label = UILabel()
+        label.text = "필터"
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
     private let filtersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 10
+        layout.minimumLineSpacing = 5
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: "FilterCell")
         return collectionView
     }()
     
-    private let saveButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("저장", for: .normal)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .clear
         return button
     }()
     
+    private let confirmButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .clear
+        return button
+    }()
+    
+    // 상단 상태바 스타일 커스텀
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    // MARK: - Properties
     private var metalRenderer: MetalRenderer?
     private var openGLRenderer: GeneralizedOpenGLRenderer?
     
@@ -71,78 +101,96 @@ class EditViewController: UIViewController {
         // 현재 편집 중인 이미지 설정 (nil 방지)
         imageModel.setCurrentEditingImage(editableImage)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "뒤로",
-            style: .plain,
-            target: self,
-            action: #selector(backButtonTapped)
-        )
+        // 네비게이션 바 숨기기
+        navigationController?.navigationBar.isHidden = true
     }
-    
-    @objc private func backButtonTapped() {
-        switch source {
-        case .camera:
-            // 카메라에서 온 경우에만 선택 대화상자 표시
-            let alert = UIAlertController(
-                title: "이미지 편집 취소",
-                message: "편집을 취소하고 돌아가시겠습니까?",
-                preferredStyle: .alert
-            )
-            
-            alert.addAction(UIAlertAction(title: "카메라로 돌아가기", style: .default) { _ in
-                // 기본 동작 - 카메라로 돌아가기
-                self.navigationController?.popViewController(animated: true)
-            })
-            
-            alert.addAction(UIAlertAction(title: "최근 항목으로 돌아가기", style: .destructive) { _ in
-                // 최근 항목 화면으로 이동 (1단계만 뒤로)
-                self.navigationController?.popViewController(animated: true)
-            })
-            
-            alert.addAction(UIAlertAction(title: "취소", style: .cancel))
-            
-            present(alert, animated: true)
-            
-        case .gallery:
-            // 갤러리에서 온 경우 바로 뒤로가기
-            navigationController?.popViewController(animated: true)
-        }
-    }
-
     private func setupViews() {
-        title = "편집"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .black
         
+        // 뷰 추가
         view.addSubview(imageView)
-        view.addSubview(filtersCollectionView)
-        view.addSubview(saveButton)
+        view.addSubview(bottomContainer)
         
+        // 하단 컨테이너에 버튼 및 필터 레이블 추가
+        bottomContainer.addSubview(cancelButton)
+        bottomContainer.addSubview(filterLabel)
+        bottomContainer.addSubview(confirmButton)
+        
+        // 필터 컬렉션뷰를 위한 별도 컨테이너 생성
+        let filtersContainer = UIView()
+        filtersContainer.backgroundColor = .gray
+        view.addSubview(filtersContainer)
+        filtersContainer.addSubview(filtersCollectionView)
+        
+        // 컬렉션뷰 설정
         filtersCollectionView.delegate = self
         filtersCollectionView.dataSource = self
         
-        saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        // 버튼 액션 설정
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         
-        // 레이아웃 설정
+        // 오토레이아웃 설정
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainer.translatesAutoresizingMaskIntoConstraints = false
+        filterLabel.translatesAutoresizingMaskIntoConstraints = false
         filtersCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
-        
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        confirmButton.translatesAutoresizingMaskIntoConstraints = false
+        filtersContainer.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
+            // 이미지 뷰 레이아웃 - 좌우 여백 10
             imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.6),
+            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.6), // 높이 감소
             
-            filtersCollectionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            filtersCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            filtersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            filtersCollectionView.heightAnchor.constraint(equalToConstant: 80),
+            // 필터 컬렉션뷰 컨테이너
+            filtersContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filtersContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            filtersContainer.heightAnchor.constraint(equalToConstant: 120),
             
-            saveButton.topAnchor.constraint(equalTo: filtersCollectionView.bottomAnchor, constant: 20),
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            saveButton.heightAnchor.constraint(equalToConstant: 50)
+            // 하단 컨테이너 레이아웃 (X, 필터, 체크 버튼을 포함)
+            bottomContainer.heightAnchor.constraint(equalToConstant: 60),
+            bottomContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            // 필터 컨테이너와 하단 컨테이너 연결
+            filtersContainer.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor),
+            
+            // 필터 컬렉션뷰 레이아웃
+            filtersCollectionView.topAnchor.constraint(equalTo: filtersContainer.topAnchor, constant: 40),
+            filtersCollectionView.leadingAnchor.constraint(equalTo: filtersContainer.leadingAnchor),
+            filtersCollectionView.trailingAnchor.constraint(equalTo: filtersContainer.trailingAnchor),
+            filtersCollectionView.bottomAnchor.constraint(equalTo: filtersContainer.bottomAnchor),
+            
+            // 취소 버튼 레이아웃 (하단 왼쪽)
+            cancelButton.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 20),
+            cancelButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            cancelButton.widthAnchor.constraint(equalToConstant: 44),
+            cancelButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            // 필터 레이블 레이아웃 (하단 중앙)
+            filterLabel.centerXAnchor.constraint(equalTo: bottomContainer.centerXAnchor),
+            filterLabel.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            
+            // 확인 버튼 레이아웃 (하단 오른쪽)
+            confirmButton.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -20),
+            confirmButton.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor),
+            confirmButton.widthAnchor.constraint(equalToConstant: 44),
+            confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
+
+    @objc private func cancelButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func confirmButtonTapped() {
+        // 이미지 저장 및 적용
+        checkPhotoLibraryPermissionAndSave()
     }
     
     private func setupRenderers() {
@@ -268,12 +316,6 @@ class EditViewController: UIViewController {
         UIImageWriteToSavedPhotosAlbum(imageToSave, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     
-    // saveButtonTapped 메서드 업데이트
-    @objc private func saveButtonTapped() {
-        print("저장 버튼 탭됨")
-        checkPhotoLibraryPermissionAndSave()
-    }
-    
     @objc private func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         if let error = error {
             print("⚠️ 이미지 저장 실패: \(error.localizedDescription)")
@@ -390,6 +432,6 @@ extension EditViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 60, height: 80)
+        return CGSize(width: 55, height: 75)
     }
 }
