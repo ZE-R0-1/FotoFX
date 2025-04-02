@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "filters": [
+    {
+      "id": "original",
+      "name": "원본",
+      "type": "none",
+      "renderer": "none",
+      "order": 0,
+      "parameters": {}
+    },
+    {
+      "id": "cool-tone",
+      "name": "쿨톤",
+      "type": "metal",
+      "renderer": "metal",
+      "order": 1,
+      "parameters": {
+        "filterType": 1
+      },
+      "shaderConstants": {
+        "redMultiplier": 0.8,
+        "greenMultiplier": 0.9,
+        "blueMultiplier": 1.2,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": "vintage",
+      "name": "빈티지",
+      "type": "metal",
+      "renderer": "metal",
+      "order": 2,
+      "parameters": {
+        "filterType": 2
+      },
+      "shaderConstants": {
+        "redMultiplier": 1.2,
+        "greenMultiplier": 0.9,
+        "blueMultiplier": 0.7,
+        "tintColor": [1.1, 0.9, 0.7],
+        "tintIntensity": 0.4,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": "dramatic",
+      "name": "드라마틱",
+      "type": "metal",
+      "renderer": "metal",
+      "order": 3,
+      "parameters": {
+        "filterType": 3
+      },
+      "shaderConstants": {
+        "redMultiplier": 1.3,
+        "greenMultiplier": 1.3,
+        "blueMultiplier": 1.3,
+        "tintColor": [1.0, 0.95, 1.05],
+        "tintIntensity": 0.3,
+        "matrixMix": 0.2,
+        "intensity": 0.85
+      }
+    },
+    {
+      "id": "sunset",
+      "name": "선셋",
+      "type": "metal",
+      "renderer": "metal",
+      "order": 4,
+      "parameters": {
+        "filterType": 4
+      },
+      "shaderConstants": {
+        "redMultiplier": 1.4,
+        "greenMultiplier": 0.85,
+        "blueMultiplier": 0.6,
+        "tintColor": [1.2, 0.7, 0.4],
+        "tintIntensity": 0.5,
+        "intensity": 0.75
+      }
+    },
+    {
+      "id": "neon",
+      "name": "네온",
+      "type": "metal",
+      "renderer": "metal",
+      "order": 5,
+      "parameters": {
+        "filterType": 5
+      },
+      "shaderConstants": {
+        "redMultiplier": 1.2,
+        "greenMultiplier": 1.3,
+        "blueMultiplier": 1.5,
+        "tintColor": [0.9, 1.1, 1.3],
+        "tintIntensity": 0.6,
+        "intensity": 0.85
+      }
+    }
+  ]
+}

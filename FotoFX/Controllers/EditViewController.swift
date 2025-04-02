@@ -19,7 +19,6 @@ class EditViewController: UIViewController {
     var imageModel: ImageModel!
     var editableImage: ImageModel.EditableImage!
     private var filteredImage: UIImage?
-    
     var source: EditSource = .gallery
     
     private let imageView: UIImageView = {
@@ -48,11 +47,13 @@ class EditViewController: UIViewController {
         return button
     }()
     
-    private var metalRenderer: MetalRenderer?
+    private var metalRenderer: GeneralizedMetalRenderer?
     private var openGLRenderer: OpenGLRenderer?
     
-    private let filterNames = ["원본", "세피아", "느와르", "크롬", "페이드", "모노", "토널", "컬러 반전", "반전"]
-
+    private var filterNames: [String] {
+        return FilterManager.shared.filterNames
+    }
+    
     // 미리보기 이미지 캐시 추가
     private var previewImages: [UIImage?] = []
     
@@ -107,7 +108,7 @@ class EditViewController: UIViewController {
             navigationController?.popViewController(animated: true)
         }
     }
-
+    
     private func setupViews() {
         title = "편집"
         view.backgroundColor = .systemBackground
@@ -145,18 +146,8 @@ class EditViewController: UIViewController {
     }
     
     private func setupRenderers() {
-        // Metal 렌더러 초기화
-        metalRenderer = MetalRenderer()
-        
-        // OpenGL 렌더러 초기화 (Objective-C 클래스)
+        metalRenderer = GeneralizedMetalRenderer()
         openGLRenderer = OpenGLRenderer()
-        
-        // 렌더러가 제대로 초기화되었는지 확인
-        if openGLRenderer == nil {
-            print("⚠️ OpenGL 렌더러 초기화 실패")
-        } else {
-            print("✅ OpenGL 렌더러 초기화 성공")
-        }
         
         if metalRenderer == nil {
             print("⚠️ Metal 렌더러 초기화 실패")
@@ -167,8 +158,11 @@ class EditViewController: UIViewController {
     
     // 미리보기 이미지 생성 메서드
     private func generatePreviewImages() {
+        // 필터 매니저에서 필터 목록 가져오기
+        let filters = FilterManager.shared.getSortedFilters()
+        
         // 미리보기 배열 초기화 (필터 개수만큼)
-        previewImages = Array(repeating: nil, count: filterNames.count)
+        previewImages = Array(repeating: nil, count: filters.count)
         
         // 원본 이미지는 그대로 사용
         previewImages[0] = editableImage.originalImage
@@ -183,15 +177,16 @@ class EditViewController: UIViewController {
             let previewImage = self.resizeImage(originalImage, targetSize: previewSize)
             
             // 각 필터별 미리보기 이미지 생성
-            for i in 1..<self.filterNames.count {
+            for i in 1..<filters.count {
+                let filter = filters[i]
                 var filteredPreview: UIImage?
                 
-                if i % 2 == 0 {
+                if filter.renderer == "metal" {
                     // Metal 필터
-                    filteredPreview = self.metalRenderer?.applyFilter(to: previewImage, filterType: i)
-                } else {
+                    filteredPreview = self.metalRenderer?.applyFilter(to: previewImage, filter: filter)
+                } else if filter.renderer == "opengl" {
                     // OpenGL 필터
-                    filteredPreview = self.openGLRenderer?.applyFilter(previewImage, filterType: i)
+                    filteredPreview = self.openGLRenderer?.applyFilter(previewImage, filterType: filter.filterType)
                 }
                 
                 // 메인 스레드에서 UI 업데이트
@@ -206,6 +201,7 @@ class EditViewController: UIViewController {
             }
         }
     }
+    
     
     // 이미지 리사이징 메서드
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
@@ -248,14 +244,14 @@ class EditViewController: UIViewController {
         case .denied, .restricted:
             // 권한이 거부되었으면 설정으로 안내
             showAlert(title: "권한 없음",
-                     message: "사진을 저장하려면 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요."
-                    )
+                      message: "사진을 저장하려면 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요."
+            )
             
         @unknown default:
             break
         }
     }
-
+    
     private func saveImage() {
         // 현재 표시 중인 이미지가 있는지 확인
         guard let imageToSave = filteredImage ?? editableImage?.currentImage ?? editableImage?.originalImage else {
@@ -266,7 +262,7 @@ class EditViewController: UIViewController {
         // 직접 저장
         UIImageWriteToSavedPhotosAlbum(imageToSave, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
-
+    
     // saveButtonTapped 메서드 업데이트
     @objc private func saveButtonTapped() {
         print("저장 버튼 탭됨")
@@ -289,7 +285,7 @@ class EditViewController: UIViewController {
             }
         }
     }
-
+    
     private func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
@@ -317,23 +313,24 @@ class EditViewController: UIViewController {
             return
         }
         
-        // 필터 종류에 따라 Metal 또는 OpenGL 사용
+        // FilterManager에서 필터 가져오기
+        guard let filter = FilterManager.shared.getFilter(at: indexPath.item) else {
+            print("필터를 찾을 수 없음: \(indexPath.item)")
+            return
+        }
+        
+        // 필터 적용
+        print("\(filter.name) 필터 적용 중...")
+        print("필터 파라미터: \(filter.parameters)")
+        if let constants = filter.shaderConstants {
+            print("셰이더 상수: \(constants)")
+        }
+        
+        // Metal 렌더러 사용
         var filteredResult: UIImage? = nil
         
-        if indexPath.item % 2 == 0 {
-            // Metal 필터 적용
-            print("Metal 필터 적용 중...")
-            filteredResult = metalRenderer?.applyFilter(to: originalImage, filterType: indexPath.item)
-            if filteredResult == nil {
-                print("Metal 필터 적용 실패")
-            }
-        } else {
-            // OpenGL 필터 적용
-            print("OpenGL 필터 적용 중...")
-            filteredResult = openGLRenderer?.applyFilter(originalImage, filterType: indexPath.item)
-            if filteredResult == nil {
-                print("OpenGL 필터 적용 실패")
-            }
+        if filter.renderer == "metal" {
+            filteredResult = metalRenderer?.applyFilter(to: originalImage, filter: filter)
         }
         
         // 필터 적용 실패 시 안전하게 처리
