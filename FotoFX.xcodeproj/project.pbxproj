@@ -79,15 +79,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CE741F022D9D5CC3004CCC8A /* Application */ = {
-			isa = PBXGroup;
-			children = (
-				CE741F002D9D5CC3004CCC8A /* AppDelegate.swift */,
-				CE741F012D9D5CC3004CCC8A /* SceneDelegate.swift */,
-			);
-			path = Application;
-			sourceTree = "<group>";
-		};
 		CE741F082D9D5CC3004CCC8A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +96,7 @@
 			children = (
 				CE741F092D9D5CC3004CCC8A /* ImageModel.swift */,
 				CE741F2E2D9D5DC0004CCC8A /* FilterModel.swift */,
+				CE741F132D9D5CC3004CCC8A /* FilterManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -112,10 +104,8 @@
 		CE741F102D9D5CC3004CCC8A /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
-				CE741F0B2D9D5CC3004CCC8A /* FotoFX-Bridging-Header.h */,
 				CE741F0C2D9D5CC3004CCC8A /* GeneralizedOpenGLRenderer.swift */,
 				CE741F0D2D9D5CC3004CCC8A /* MetalRenderer.swift */,
-				CE741F0E2D9D5CC3004CCC8A /* OpenGLRenderer.h */,
 				CE741F0F2D9D5CC3004CCC8A /* OpenGLRenderer.m */,
 			);
 			path = Renderers;
@@ -124,17 +114,10 @@
 		CE741F122D9D5CC3004CCC8A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CE741F182D9D5CC3004CCC8A /* filters.json */,
 				CE741F112D9D5CC3004CCC8A /* Assets.xcassets */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		CE741F142D9D5CC3004CCC8A /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				CE741F132D9D5CC3004CCC8A /* FilterManager.swift */,
-			);
-			path = Service;
 			sourceTree = "<group>";
 		};
 		CE741F162D9D5CC3004CCC8A /* Views */ = {
@@ -148,16 +131,17 @@
 		CE741F1C2D9D5CC3004CCC8A /* FotoFX */ = {
 			isa = PBXGroup;
 			children = (
-				CE741F022D9D5CC3004CCC8A /* Application */,
+				CE741F002D9D5CC3004CCC8A /* AppDelegate.swift */,
+				CE741F012D9D5CC3004CCC8A /* SceneDelegate.swift */,
 				CE741F0A2D9D5CC3004CCC8A /* Models */,
-				CE741F162D9D5CC3004CCC8A /* Views */,
 				CE741F082D9D5CC3004CCC8A /* Controllers */,
+				CE741F162D9D5CC3004CCC8A /* Views */,
 				CE741F102D9D5CC3004CCC8A /* Renderers */,
 				CE741F122D9D5CC3004CCC8A /* Resources */,
-				CE741F142D9D5CC3004CCC8A /* Service */,
-				CE741F182D9D5CC3004CCC8A /* filters.json */,
 				CE741F192D9D5CC3004CCC8A /* Info.plist */,
 				CE741F1B2D9D5CC3004CCC8A /* LaunchScreen.storyboard */,
+				CE741F0B2D9D5CC3004CCC8A /* FotoFX-Bridging-Header.h */,
+				CE741F0E2D9D5CC3004CCC8A /* OpenGLRenderer.h */,
 			);
 			path = FotoFX;
 			sourceTree = "<group>";
@@ -335,7 +319,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/Renderers/FotoFX-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/FotoFX-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -371,7 +355,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/Renderers/FotoFX-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "FotoFX/FotoFX-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
